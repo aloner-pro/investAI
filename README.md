@@ -1,6 +1,6 @@
 # investAI
 
-InvestAI is a powerful generative AI application designed to assist traders and investors by providing real-time information, predictive analytics, custom tools &  personalized responses based on user's own data like financial reports,stock portfolio etc. , all in one place. Leveraging advanced frameworks like LangChain, InvestAI offers a seamless experience where users can interact & make informed decisions, and stay ahead in the market.
+InvestAI is a powerful generative AI application designed for providing real-time information, predictive analytics, custom tools &  personalized responses based on user's own data like financial reports,stock portfolio etc. , all in one place. Leveraging advanced frameworks like LangChain, InvestAI offers a seamless experience where users can interact & make informed decisions, and stay ahead in the market.
 
 ## Features
 
@@ -52,7 +52,7 @@ InvestAI is a project created by technology enthusiasts for their own educationa
 
 ## Contact
 
-For any inquiries or feedback, please reach out to us .
+For any inquiries or feedback, please reach out to us at anunayandkumar@gmail.com or sskm593@gmail.com .
 
 ---
 
