@@ -1,0 +1,11 @@
+Ticker,Company Name,Shares Owned,Purchase Price (USD),Current Price (USD),Purchase Date
+AAPL,Apple Inc.,50,150.00,120.00,2022-01-15
+TSLA,Tesla Inc.,30,800.00,600.00,2022-02-10
+AMZN,Amazon.com Inc.,10,3500.00,3000.00,2022-03-01
+NFLX,Netflix Inc.,40,600.00,400.00,2022-04-05
+GOOGL,Alphabet Inc.,20,2800.00,2200.00,2022-05-15
+META,Meta Platforms Inc.,25,350.00,250.00,2022-06-20
+NVDA,NVIDIA Corporation,35,300.00,200.00,2022-07-30
+MSFT,Microsoft Corporation,15,320.00,280.00,2022-08-25
+DIS,Walt Disney Co.,50,170.00,130.00,2022-09-10
+BABA,Alibaba Group Holding Ltd.,40,200.00,140.00,2022-10-01
