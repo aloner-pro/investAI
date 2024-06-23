@@ -45,15 +45,10 @@ We welcome contributions from the community! If you would like to contribute to 
 4. Push to the branch (`git push origin feature/YourFeature`)
 5. Open a pull request
 
-## Disclaimer
-
-InvestAI is a project created by technology enthusiasts for their own educational purposes and is not intended for real world uses . Users are solely responsible for their  investment decisions and any financial outcomes, whether profit or loss. We do not recommend relying  on this product for financial decisions and disclaim all responsibility for any actions taken based on the use of this product.
-
-
 ## Contact
 
 For any inquiries or feedback, please reach out to us at anunayandkumar@gmail.com or sskm593@gmail.com .
 
----
+## Disclaimer
 
-InvestAI - Your one-stop solution for informed trading and investment decisions.
+InvestAI is a project created by technology enthusiasts for their own educational purposes and is not intended for real world uses . Users are solely responsible for their  investment decisions and any financial outcomes, whether profit or loss. We do not recommend relying  on this product for financial decisions and disclaim all responsibility for any actions taken based on the use of this product.
