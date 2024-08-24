@@ -1,79 +1,94 @@
-from keras.models import load_model
+import streamlit as st
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import load_model
+import globals  # Import the global module
 
-# Load the model
-loaded_model = load_model("my_model.keras")
 
+# Define a function to load and cache the model
+@st.cache_resource
+def load_trained_model():
+    return load_model("my_model.keras")
+
+
+# Define a function to prepare the data
+def prepare_data(file_path):
+    df = pd.read_csv(file_path)
+    df['Date'] = pd.to_datetime(df['Date'])
+    dfc = df.reset_index()['Close']
+
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    df1 = scaler.fit_transform(np.array(dfc).reshape(-1, 1))
+
+    return df, df1, scaler
+
+
+# Define a function to create datasets
 def create_dataset(dataset, time_step=1):
-	dataX, dataY = [], []
-	for i in range(len(dataset)-time_step-1):
-		a = dataset[i:(i+time_step), 0]   ###i=0, 0,1,2,3-----99   100
-		dataX.append(a)
-		dataY.append(dataset[i + time_step, 0])
-	return np.array(dataX), np.array(dataY)
-
-df = pd.read_csv('file.csv')
-df['Date'] = pd.to_datetime(df['Date'])
-dfc = df.reset_index()['Close']
-scaler=MinMaxScaler(feature_range=(0,1))
-df1=scaler.fit_transform(np.array(dfc).reshape(-1,1))
-
-training_size=int(len(df1)*0.65)
-test_data=df1[training_size:len(df1),:1]
-time_step = 100
-X_test, ytest = create_dataset(test_data, time_step)
-X_test = X_test.reshape(X_test.shape[0],X_test.shape[1] , 1)
-
-test_predict=loaded_model.predict(X_test)
-test_predict=scaler.inverse_transform(test_predict)
-print(test_predict[-5:])
-predictions_list = test_predict[-5:].flatten().tolist()
-
-# Format the string
-predictions_str = ", ".join(map(str, predictions_list))
-output_str = f"The stock prices for the next 5 days that has been predicted via LSTM Model are {predictions_str}  : values are in  INR"
-
-# Print the formatted string
-print(output_str)
-
-day_new=np.arange(1,101)
-day_pred=np.arange(101,131)
-df3=df1.tolist()
-
-print("Test", len(test_data))
-x_input=test_data[200:].reshape(1,-1)
-temp_input=list(x_input)
-temp_input=temp_input[0].tolist()
-lst_output=[]
-n_steps=100
-i=0
-while(i<30):
-
-    if(len(temp_input)>100):
-        #print(temp_input)
-        x_input=np.array(temp_input[1:])
-        # print("{} day input {}".format(i,x_input))
-        x_input=x_input.reshape(1,-1)
-        x_input = x_input.reshape((1, n_steps, 1))
-        #print(x_input)
-        yhat = loaded_model.predict(x_input, verbose=0)
-        # print("{} day output {}".format(i,yhat))
-        temp_input.extend(yhat[0].tolist())
-        temp_input=temp_input[1:]
-        #print(temp_input)
-        lst_output.extend(yhat.tolist())
-        i=i+1
-    else:
-        x_input = x_input.reshape((1, n_steps,1))
-        yhat = loaded_model.predict(x_input, verbose=0)
-        print(yhat[0])
-        temp_input.extend(yhat[0].tolist())
-        print(len(temp_input))
-        lst_output.extend(yhat.tolist())
-        i=i+1
+    dataX, dataY = [], []
+    for i in range(len(dataset) - time_step - 1):
+        a = dataset[i:(i + time_step), 0]
+        dataX.append(a)
+        dataY.append(dataset[i + time_step, 0])
+    return np.array(dataX), np.array(dataY)
 
 
-df3.extend(lst_output)
-df3=scaler.inverse_transform(df3).tolist()
+# Load the trained model
+model = load_trained_model()
+
+# Streamlit app
+st.title("Stock Price Prediction")
+
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+if uploaded_file is not None:
+    df, df1, scaler = prepare_data(uploaded_file)
+
+    # Prepare test data
+    time_step = 100
+    X_test, y_test = create_dataset(df1, time_step)
+    X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
+
+    # Predict using the model
+    test_predict = model.predict(X_test)
+    test_predict = scaler.inverse_transform(test_predict)
+
+    # Display the last 5 predictions
+    st.write("Predicted stock prices for the next 5 days:")
+    st.write(test_predict[-5:])
+
+    # Generate future predictions
+    day_new = np.arange(1, 101)
+    day_pred = np.arange(101, 131)
+    df3 = df1.tolist()
+
+    x_input = X_test[-1].reshape(1, -1)
+    temp_input = x_input[0].tolist()
+    lst_output = []
+    n_steps = 100
+    i = 0
+
+    while i < 30:
+        if len(temp_input) > n_steps:
+            x_input = np.array(temp_input[1:])
+            x_input = x_input.reshape(1, n_steps, 1)
+            yhat = model.predict(x_input, verbose=0)
+            temp_input.extend(yhat[0].tolist())
+            temp_input = temp_input[1:]
+            lst_output.extend(yhat.tolist())
+            i += 1
+        else:
+            x_input = np.array(temp_input).reshape(1, n_steps, 1)
+            yhat = model.predict(x_input, verbose=0)
+            temp_input.extend(yhat[0].tolist())
+            lst_output.extend(yhat.tolist())
+            i += 1
+
+    df3.extend(lst_output)
+    df3 = scaler.inverse_transform(np.array(df3).reshape(-1, 1)).tolist()
+
+    # Create the output string
+    output_str = f"The predicted stock price for the next 5 days is: {df3[-5:]}"
+
+    # Update the global variables
+    globals.update_globals(df3, output_str)

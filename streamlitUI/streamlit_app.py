@@ -12,7 +12,7 @@ from langchain.agents import tool
 import schedule
 import time
 from datetime import datetime
-from modulwa import output_str, df3
+from globals import output_str, df3
 import pypdf
 
 st.title("📈🔗 invest AI")
